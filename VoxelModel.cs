@@ -9,6 +9,15 @@ public class VoxelModel {
     public readonly Vector3Int Size;
     public readonly string Name;
 
+    //Returns a deep copy of the data for iteration purposes
+    public int[] Data {
+        get {
+            int[] result = new int[data.Length];
+            for (int i = 0; i < data.Length; i++) { result[i] = data[i]; }
+            return result;
+        }
+    }
+
     private int[] data;
 
     //Creates an empty voxel model with the given size dimensions
@@ -18,6 +27,15 @@ public class VoxelModel {
         data = new int[x * y * z];
         for (int i = 0; i < data.Length; i++)
             data[i] = AIR;
+    }
+
+    public VoxelModel(int x, int y, int z, string name, int[] d){
+        Size = new Vector3Int (x, y, z);
+        Name = name;
+        data = new int[x * y * z];
+        for (int i = 0; i < d.Length; i++){
+            data[i] = d[i];
+        }
     }
 
     
