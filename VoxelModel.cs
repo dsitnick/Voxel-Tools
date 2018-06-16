@@ -9,6 +9,8 @@ public class VoxelModel {
     public readonly Vector3Int Size;
     public readonly string Name;
 
+
+
     //Returns a deep copy of the data for iteration purposes
     public int[] Data {
         get {
@@ -157,9 +159,44 @@ public class VoxelModel {
 
     #endregion
 
+    #region Particles
+
+    //Builds a buffer of particle data to display the model through particles
+    public ParticleSystem.Particle[] BuildParticles () {
+        List<ParticleSystem.Particle> result = new List<ParticleSystem.Particle> ();
+        ParticleSystem.Particle particle = new ParticleSystem.Particle();
+        particle.remainingLifetime = float.MaxValue;
+        particle.startSize = 1;
+
+        for (int x = 0; x < Size.x; x++) {
+            for (int y = 0; y < Size.y; y++) {
+                for (int z = 0; z < Size.z; z++) {
+                    if (isBlock (x, y, z)) {
+                        //Space is occupied, build a voxel here
+
+                        //Offset of this voxel from the center
+                        Vector3 pos = new Vector3 (x, y, z) + (Vector3.one / 2f) - new Vector3 (Size.x, Size.y, Size.z) / 2f;
+
+                        //Color of this voxel
+                        Color color = VoxelColors.Colors[Get (x, y, z)];
+
+                        particle.position = pos;
+                        particle.startColor = color;
+
+                        result.Add (particle);
+                    }
+                }
+            }
+        }
+
+        return result.ToArray ();
+    }
+
+    #endregion
+
     #region Util
 
-    
+
     //Returns the index equivalent to the given coordinate
     private int index (int x, int y, int z) {
         return x + (y * Size.x) + (z * Size.y * Size.x);
